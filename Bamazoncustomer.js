@@ -15,4 +15,20 @@ connection.connect(function(err){
 	}
 	console.log('connected as id ' + connection.threadId);
 });
+
+//show products available in Bamazon database Products table
+function showProducts(){
+	connection.query('SELECT * FROM `Products`', function(error, results, fields){
+		if(error){
+			console.log("error: " + error);
+		}
+		for(var i = 0; i < results.length; i++) {
+		console.log('ID: ' + results[i].itemID +
+			     '\nProduct: ' + results[i].ProductName + 
+			     '\nPrice: ' + results[i].Price + '\n');
+	}
+	})
+}
+
+showProducts();
  
