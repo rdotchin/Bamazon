@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rdotchin/Bamazon#readme",
   "dependencies": {
+    "console.table": "^0.8.0",
     "mysql": "^2.12.0",
     "prompt": "^1.0.0"
   }

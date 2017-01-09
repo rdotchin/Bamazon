@@ -1,6 +1,8 @@
 var prompt = require('prompt');
 var mysql = require('mysql');
+require('console.table');
 
+//connect to the database
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
@@ -22,13 +24,13 @@ function showProducts(){
 		if(error){
 			console.log("error: " + error);
 		}
-		for(var i = 0; i < results.length; i++) {
-		console.log('ID: ' + results[i].itemID +
-			     '\nProduct: ' + results[i].ProductName + 
-			     '\nPrice: ' + results[i].Price + '\n');
-	}
-	})
+		//log Bamazon table using console.table npm
+		console.table(results);
+		
+	});
 }
 
 showProducts();
+
+
  
