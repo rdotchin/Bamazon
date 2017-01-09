@@ -1,0 +1,23 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "an amazon-like storefront using mysql and node.js",
+  "main": "Bamazoncustomer.js",
+  "scripts": {
+    "test": "node Bamazoncustomer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdotchin/Bamazon.git"
+  },
+  "author": "Richard Dotchin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rdotchin/Bamazon/issues"
+  },
+  "homepage": "https://github.com/rdotchin/Bamazon#readme",
+  "dependencies": {
+    "mysql": "^2.12.0",
+    "prompt": "^1.0.0"
+  }
+}
