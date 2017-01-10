@@ -1,8 +1,7 @@
 var inquirer = require('inquirer');
 var mysql = require('mysql');
 require('console.table');
-var custID;
-var howMany;
+
 //connect to the database
 var connection = mysql.createConnection({
 	host: 'localhost',
@@ -27,45 +26,75 @@ var start = function(){
 		}
 		//log Bamazon table using console.table npm
 		console.table(results);
+		//call function to ask customr which product they would like
 		idQuery();
 	});
 	
 }
 
+//ask the customer which item they would like to purchase
 var idQuery = function(){
-	inquirer.prompt([{type: 'input',
-					  name: 'userID',
-					  message: 'Choose the ID of the product you would like to purchase'}]).then(function(answers){
-		if(isNaN(answers.userID)){
-			console.log('pick a number dummy')
-			idQuery();
-		} else{
-		console.log('ID: ' + answers.userID);
-	}
-
+	inquirer.prompt([{name: 'userID',
+				      type: 'input',
+					  message: 'Choose the ID of the product you would like to purchase',
+					  valiate: function(value){
+					  	if(isNaN(value) == false){
+					  		console.log('Not a number, please select an item');
+					  		return true
+					  	} else{
+					  		return false
+					  	}
+					  }}]).then(function(answers){
+		/*call function asking the customer for the amount they would like and passing in the 
+		product ID they selected*/
+		amountQuery(answers.userID);
 	})
+
 }
 
-var amountQuery = function() {
+//ask the customer how many of the item they selected they would like to purchase
+var amountQuery = function(productID) {
 	inquirer.prompt([{type: 'input',
 					  name: 'userAmount',
 					  message: 'How many units would you like to purchase?'}]).then(function(answers){
-		console.log('Amount: ' + answers.userAmount);
+		/*call function to select the item in the MySQL table, update the quantity and
+		provide the total price passing in the product ID and amount chosen*/
+		selectItem(productID, answers.userAmount)
 	})
 }
 
+/*select the item from MySQL table, update the table with the quanttity after purchase, notify
+customer of total price*/
+var selectItem = function(productID, amount){
+	connection.query('SELECT * FROM Products WHERE itemID = ?', [productID], function(error, results, fields){
+		if(error){console.log(error);} 
+		//if out of stock it will notify the customer and ask them to make a new purchase
+		else if(amount > results[0].StockQuantity){
+			console.log("Insufficient quantity!");
+			start();
+		}
+		var price = results[0].Price * amount;
+		var updatedQuant = results[0].StockQuantity - amount;
+		//receipt for customer
+		console.log('Item: ' + results[0].ProductName + 
+			        '\nAmount: ' + amount + 
+			        '\nTotal purchase: $' + price);
+		
+		//connect to MySQL tabl and update the stock quantity then ending connection
+		connection.query('UPDATE Products SET StockQuantity = ? WHERE itemID = ?', [updatedQuant, productID], function(error, results, fields){
+			if(error){console.log(error);}
+			console.log("Thank you for your business!");
+			connection.destroy();
+		})
+		
+	})
+
+}
+
+//calling the start function to begin the purchase process
 start();
 
-/*
-showProducts();*/
 
-//prompt user with 2 questions
-
-
-//check to see if store has quantity, if not reply Insufficient quantity!
-//else update SQL database to reflect the remaining quantity 
-//show the customer the total cost of their purchase
-/*connection.query('UPDATE Products SET ')*/
 
 
 
