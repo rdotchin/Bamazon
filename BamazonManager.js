@@ -18,33 +18,37 @@ connection.connect(function(err){
 	/*console.log('connected as id ' + connection.threadId);*/
 });
 
-inquirer.prompt([{name: 'managerChoice',
-				   type: 'rawlist',
-				   message: 'Manager Options',
-				   choices: ['Veiw Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product']	
-}]).then(function(answers){
-	switch(answers.managerChoice) {
-		case 'Veiw Products for Sale':
-		allInventory();
-		break;
-		case 'View Low Inventory':
-		lowInventory();
-		break;
-		case 'Add to Inventory':
-		addInventory();
-		break;
-		case 'Add New Product':
-		console.log(4);
-		break;
-	}
-})
-
+var managerStart = function(){
+		inquirer.prompt([{name: 'managerChoice',
+						   type: 'rawlist',
+						   message: 'Manager Options',
+						   choices: ['Veiw Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product', 'Exit program']	
+		}]).then(function(answers){
+			switch(answers.managerChoice) {
+				case 'Veiw Products for Sale':
+				allInventory();
+				break;
+				case 'View Low Inventory':
+				lowInventory();
+				break;
+				case 'Add to Inventory':
+				addInventory();
+				break;
+				case 'Add New Product':
+				addProduct();
+				break;
+				case 'Exit program':
+				connection.destroy();
+				break;
+			}
+		})
+}
 //list every available item
 var allInventory = function(){
 	connection.query('SELECT * FROM `Products`', function(error, results, fields){
 		if(error){console.log(error);}
 		console.table(results);
-		connection.destroy();
+		managerStart();
 	})
 }
 
@@ -55,12 +59,41 @@ var lowInventory = function(){
 		if(error){console.log(error);}
 		//add in if there is no low inventory
 		console.table(results);
-		connection.destroy();
+		managerStart();
 	})
 }
 
+var updateInventory = function(newQuant, productID){
+	console.log(newQuant, productID);
+	connection.query('UPDATE Products SET ? WHERE ?', [{StockQuantity: newQuant}, 
+					  								    {itemID: productID}], function(err, res){
+					  								    if(err){console.log(err);}
+					  								    console.log('Successfully updated inventory');
+					  								    managerStart();
+					  									})
+}
 //display a prompt that will let the manager "add more" of any item currently in the store
 var addInventory = function(){
+	inquirer.prompt([{name: 'productChoice',
+					 type: 'input',
+					 message: 'Choose an itemID'},
+					 {name: 'quantIncrease',
+					  type: 'input',
+					  message: 'Enter number of quantity to add'}]).then(function(answers){
+					  		connection.query('SELECT StockQuantity FROM Products WHERE itemID = ?', [answers.productChoice], function(err, res){
+					  			if(err){console.log(err);}
+					  			//change user increase choice from sting to number using parseInt() then added to current stock
+					  			var quantTotal = parseInt(answers.quantIncrease) + res[0].StockQuantity;
+					  			var parseID = parseInt(answers.productChoice);
+					  			updateInventory(quantTotal, parseID);
+					  		})					  	
+					  })
+}
+
+
+
+//allow the manager to add a completely new product to the store.
+var addProduct = function(){
 	inquirer.prompt([{name: 'product',
 					  type: 'input',
 					  message: 'What product would you like to add?'},
@@ -82,9 +115,12 @@ var addInventory = function(){
 					  		StockQuantity: answers.quantity}, function(err, res){
 					  			if(err){console.log(err);}
 					  			console.log(answers.product + ' was successfully added to the inventory: ');
-					  			allInventory();
+					  			managerStart();
 					  	})
 					  })
 }
+
+//begin application
+managerStart();
 
 //allow the manager to add a completely new product to the store.
