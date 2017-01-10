@@ -31,7 +31,7 @@ inquirer.prompt([{name: 'managerChoice',
 		lowInventory();
 		break;
 		case 'Add to Inventory':
-		console.log(3);
+		addInventory();
 		break;
 		case 'Add New Product':
 		console.log(4);
@@ -53,12 +53,38 @@ var allInventory = function(){
 var lowInventory = function(){
 	connection.query('SELECT * FROM `Products` WHERE `StockQuantity` < 5', function(error, results, fields){
 		if(error){console.log(error);}
+		//add in if there is no low inventory
 		console.table(results);
 		connection.destroy();
 	})
 }
 
 //display a prompt that will let the manager "add more" of any item currently in the store
-
+var addInventory = function(){
+	inquirer.prompt([{name: 'product',
+					  type: 'input',
+					  message: 'What product would you like to add?'},
+					 {name: 'department',
+					  type: 'input',
+					  message: 'What department?'},
+					 {name: 'price',
+					  type: 'input',
+					  message: 'Price for this product?'},
+					 {name: 'quantity',
+					  type: 'input',
+					  message: 'Quantity for this product?'}
+					  ]).then(function(answers){
+					  	//insert the new product into the Products table
+					  	connection.query('INSERT INTO `Products` SET ?', {
+					  		ProductName: answers.product,
+					  		DepartmentName: answers.department,
+					  		Price: answers.price,
+					  		StockQuantity: answers.quantity}, function(err, res){
+					  			if(err){console.log(err);}
+					  			console.log(answers.product + ' was successfully added to the inventory: ');
+					  			allInventory();
+					  	})
+					  })
+}
 
 //allow the manager to add a completely new product to the store.
