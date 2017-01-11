@@ -15,7 +15,7 @@ connection.connect(function(err){
 	if(err) {
 		console.error('error connecting: ' + err.stack);
 	}
-	/*console.log('connected as id ' + connection.threadId);*/
+	
 });
 
 //show products available in Bamazon database Products table
