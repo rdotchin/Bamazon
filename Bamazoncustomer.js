@@ -73,8 +73,10 @@ var selectItem = function(productID, amount){
 			console.log("Insufficient quantity!");
 			start();
 		}
+		var deptName = results[0].DepartmentName;
 		var price = results[0].Price * amount;
 		var updatedQuant = results[0].StockQuantity - amount;
+
 		//receipt for customer
 		console.log('Item: ' + results[0].ProductName + 
 			        '\nAmount: ' + amount + 
@@ -83,14 +85,33 @@ var selectItem = function(productID, amount){
 		//connect to MySQL tabl and update the stock quantity then ending connection
 		connection.query('UPDATE Products SET StockQuantity = ? WHERE itemID = ?', [updatedQuant, productID], function(error, results, fields){
 			if(error){console.log(error);}
+
 			console.log("Thank you for your business!");
-			connection.destroy();
+			calcTotalSales(price, deptName);
+			/*connection.destroy();*/
 		})
 		
 	})
 
 }
 
+//calculate the TotalSales from the department table with the amount purchased
+var calcTotalSales = function(amount, department){
+	connection.query('SELECT TotalSales FROM Departments WHERE DepartmentName = ?', [department], function(error, results, fields){
+		if(error){console.log(error);}
+		var amountPlusSales = amount + results[0].TotalSales;
+		addTotalSales(amountPlusSales, department);
+
+	})
+}
+
+//update the table with the calculated total sales number
+var addTotalSales = function(amount, department){
+	connection.query('UPDATE Departments SET TotalSales = ? WHERE DepartmentName = ?', [amount, department], function(error, results, fields){
+		if(error){console.log(error);}
+		connection.destroy();
+	})
+}
 //calling the start function to begin the purchase process
 start();
 

@@ -15,15 +15,16 @@ connection.connect(function(err){
 	if(err) {
 		console.error('error connecting: ' + err.stack);
 	}
-	/*console.log('connected as id ' + connection.threadId);*/
 });
 
+//begins the application and prompts the manager with choices
 var managerStart = function(){
 		inquirer.prompt([{name: 'managerChoice',
 						   type: 'rawlist',
 						   message: 'Manager Options',
 						   choices: ['Veiw Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product', 'Exit program']	
 		}]).then(function(answers){
+			//switch statement to take the managers answer and call the related function
 			switch(answers.managerChoice) {
 				case 'Veiw Products for Sale':
 				allInventory();
@@ -107,20 +108,20 @@ var addProduct = function(){
 					  type: 'input',
 					  message: 'Quantity for this product?'}
 					  ]).then(function(answers){
-					  	//insert the new product into the Products table
-					  	connection.query('INSERT INTO `Products` SET ?', {
-					  		ProductName: answers.product,
-					  		DepartmentName: answers.department,
-					  		Price: answers.price,
-					  		StockQuantity: answers.quantity}, function(err, res){
-					  			if(err){console.log(err);}
-					  			console.log(answers.product + ' was successfully added to the inventory: ');
-					  			managerStart();
-					  	})
+						  	//insert the new product into the Products table
+						  	connection.query('INSERT INTO `Products` SET ?', {
+						  		ProductName: answers.product,
+						  		DepartmentName: answers.department,
+						  		Price: answers.price,
+						  		StockQuantity: answers.quantity}, function(err, res){
+						  			if(err){console.log(err);}
+						  			console.log(answers.product + ' was successfully added to the inventory: ');
+						  			managerStart();
+						  	})
 					  })
 }
 
 //begin application
 managerStart();
 
-//allow the manager to add a completely new product to the store.
+.
