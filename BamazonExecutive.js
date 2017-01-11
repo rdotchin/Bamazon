@@ -30,17 +30,44 @@ var executiveStart = function(){
 				      		viewProducts();
 				      		break;
 				      		case 'Create New Department':
-				      		console.log('create');
+				      		createDepartment();
 				      		break;
 				      	}
 				      })
 }
 
 var viewProducts = function(){
-	connection.query('SELECT * FROM `Departments`', function(error, results, fields){
+	//Select statement that subtracts sales from costs and shows them as a temporary column called TotalProfit
+	var query = 'SELECT *, `TotalSales` - `OverHeadCosts` AS `TotalProfit` FROM Departments;'
+	connection.query(query, function(error, results, fields){
 		console.table(results);
 		connection.destroy();
 	})
 }
 
+//allows executive to create a department in the Departments table
+var createDepartment = function(){
+	inquirer.prompt([{name: 'department',
+					   type: 'input',
+					  message: 'Name of the department'},
+					  {name: 'overhead',
+					  	type: 'input',
+					  	message: 'What is the overhead cost'},
+					  	{name: 'sales',
+					  	type: 'input',
+					  	message: 'What are the products total sales'}
+					  	]).then(function(answers){
+					  		var query = 'INSERT INTO `Departments` SET ?'
+					  		connection.query(query, {
+					  			DepartmentName: answers.department,
+					  			OverHeadCosts: answers.overhead,
+					  			TotalSales: answers.sales
+					  		}, function(err, res){
+					  			if(err){console.log(err);}
+					  			console.log(res);
+					  		})
+					  		console.log('New Department Successfully Added');
+					  		connection.destroy();
+					  	})
+}
 executiveStart();
