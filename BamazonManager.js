@@ -76,11 +76,26 @@ var updateInventory = function(newQuant, productID){
 //display a prompt that will let the manager "add more" of any item currently in the store
 var addInventory = function(){
 	inquirer.prompt([{name: 'productChoice',
-					 type: 'input',
-					 message: 'Choose an itemID'},
-					 {name: 'quantIncrease',
-					  type: 'input',
-					  message: 'Enter number of quantity to add'}]).then(function(answers){
+					type: 'input',
+					message: 'Choose an itemID',
+					validate: function(value){
+					  	if(!isNaN(value)){
+					  		return true
+					  	} 
+					  	else {
+					  		console.log('\nenter a number\n');
+					  	}}},
+					{name: 'quantIncrease',
+					type: 'input',
+					message: 'Enter number of quantity to add',
+					validate: function(value){
+					  	if(!isNaN(value)){
+					  		return true
+					  	} 
+					  	else {
+					  		console.log('\nenter a number\n');
+					  	}
+					}}]).then(function(answers){
 					  		connection.query('SELECT StockQuantity FROM Products WHERE itemID = ?', [answers.productChoice], function(err, res){
 					  			if(err){console.log(err);}
 					  			//change user increase choice from sting to number using parseInt() then added to current stock
@@ -103,11 +118,25 @@ var addProduct = function(){
 					  message: 'What department?'},
 					 {name: 'price',
 					  type: 'input',
-					  message: 'Price for this product?'},
+					  message: 'Price for this product?',
+					validate: function(value){
+					  		if(!isNaN(value)){
+					  			return true
+					  		} 
+					  		else {
+					  			console.log('\nenter a number\n');
+					  		}}},
 					 {name: 'quantity',
 					  type: 'input',
-					  message: 'Quantity for this product?'}
-					  ]).then(function(answers){
+					  message: 'Quantity for this product?',
+					  validate: function(value){
+					  	if(!isNaN(value)){
+					  		return true
+					  	} 
+					  	else {
+					  		console.log('\nenter a number\n');
+					  		}
+					   }}]).then(function(answers){
 						  	//insert the new product into the Products table
 						  	connection.query('INSERT INTO `Products` SET ?', {
 						  		ProductName: answers.product,
@@ -124,4 +153,3 @@ var addProduct = function(){
 //begin application
 managerStart();
 
-.

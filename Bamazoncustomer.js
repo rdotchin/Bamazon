@@ -37,14 +37,14 @@ var idQuery = function(){
 	inquirer.prompt([{name: 'userID',
 				      type: 'input',
 					  message: 'Choose the ID of the product you would like to purchase',
-					  valiate: function(value){
-					  	if(isNaN(value) == false){
-					  		console.log('Not a number, please select an item');
+					  validate: function(value){
+					  	if(!isNaN(value)){
 					  		return true
-					  	} else{
-					  		return false
+					  	} 
+					  	else {
+					  		console.log('\nenter a number\n');
 					  	}
-					  }}]).then(function(answers){
+					    }}]).then(function(answers){
 		/*call function asking the customer for the amount they would like and passing in the 
 		product ID they selected*/
 		amountQuery(answers.userID);
@@ -56,7 +56,15 @@ var idQuery = function(){
 var amountQuery = function(productID) {
 	inquirer.prompt([{type: 'input',
 					  name: 'userAmount',
-					  message: 'How many units would you like to purchase?'}]).then(function(answers){
+					  message: 'How many units would you like to purchase?',
+					  validate: function(value){
+					  	if(!isNaN(value)){
+					  		return true
+					  	} 
+					  	else {
+					  		console.log('\nenter a number\n');
+					  	}
+					  	}}]).then(function(answers){
 		/*call function to select the item in the MySQL table, update the quantity and
 		provide the total price passing in the product ID and amount chosen*/
 		selectItem(productID, answers.userAmount)
@@ -71,17 +79,17 @@ var selectItem = function(productID, amount){
 		//if out of stock it will notify the customer and ask them to make a new purchase
 		else if(amount > results[0].StockQuantity){
 			console.log("Insufficient quantity!");
-			start();
-		}
+			return start();
+		} 
+		else {
 		var deptName = results[0].DepartmentName;
 		var price = results[0].Price * amount;
 		var updatedQuant = results[0].StockQuantity - amount;
 
 		//receipt for customer
-		console.log('Item: ' + results[0].ProductName + 
-			        '\nAmount: ' + amount + 
-			        '\nTotal purchase: $' + price);
-		
+		var receipt = 'Item: ' + results[0].ProductName + '\nAmount: ' + amount + '\nTotal purchase: $' + price;
+		console.log(receipt);
+		}
 		//connect to MySQL tabl and update the stock quantity then ending connection
 		connection.query('UPDATE Products SET StockQuantity = ? WHERE itemID = ?', [updatedQuant, productID], function(error, results, fields){
 			if(error){console.log(error);}
