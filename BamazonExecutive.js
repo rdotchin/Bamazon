@@ -25,16 +25,22 @@ var executiveStart = function(){
 					  message: 'Choose one of the following',
 				      choices: ['View Product Sales by Department', 'Create New Department']}
 				      ]).then(function(answers){
-				      	console.log(answers);
 				      	switch(answers.executiveChoice){
 				      		case 'View Product Sales by Department':
-				      		console.log('view');
+				      		viewProducts();
 				      		break;
 				      		case 'Create New Department':
 				      		console.log('create');
 				      		break;
 				      	}
 				      })
+}
+
+var viewProducts = function(){
+	connection.query('SELECT * FROM `Departments`', function(error, results, fields){
+		console.table(results);
+		connection.destroy();
+	})
 }
 
 executiveStart();
