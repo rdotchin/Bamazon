@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
 	user: 'root',
-	password: 'sigepfenderp',
+	password: '',
 	database: 'Bamazon'
 })
 
@@ -42,12 +42,12 @@ var idQuery = function(){
 					  		return true
 					  	} 
 					  	else {
-					  		console.log('\nenter a number\n');
+					  		console.log('\nError, please enter an itemID number\n');
 					  	}
 					    }}]).then(function(answers){
 		/*call function asking the customer for the amount they would like and passing in the 
 		product ID they selected*/
-		amountQuery(answers.userID);
+		amountQuery(Math.floor(answers.userID));
 	})
 
 }
@@ -62,12 +62,12 @@ var amountQuery = function(productID) {
 					  		return true
 					  	} 
 					  	else {
-					  		console.log('\nenter a number\n');
+					  		console.log('\nError, please enter a number\n');
 					  	}
 					  	}}]).then(function(answers){
 		/*call function to select the item in the MySQL table, update the quantity and
 		provide the total price passing in the product ID and amount chosen*/
-		selectItem(productID, answers.userAmount)
+		selectItem(productID, Math.floor(answers.userAmount));
 	})
 }
 
@@ -87,14 +87,14 @@ var selectItem = function(productID, amount){
 		var updatedQuant = results[0].StockQuantity - amount;
 
 		//receipt for customer
-		var receipt = 'Item: ' + results[0].ProductName + '\nAmount: ' + amount + '\nTotal purchase: $' + price;
+		var receipt = '\nItem: ' + results[0].ProductName + '\nAmount: ' + amount + '\nTotal purchase: $' + price;
 		console.log(receipt);
 		}
 		//connect to MySQL tabl and update the stock quantity then ending connection
 		connection.query('UPDATE Products SET StockQuantity = ? WHERE itemID = ?', [updatedQuant, productID], function(error, results, fields){
 			if(error){console.log(error);}
 
-			console.log("Thank you for your business!");
+			console.log("Thank you for your business!\n");
 			calcTotalSales(price, deptName);
 			/*connection.destroy();*/
 		})

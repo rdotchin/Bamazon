@@ -65,7 +65,6 @@ var lowInventory = function(){
 }
 
 var updateInventory = function(newQuant, productID){
-	console.log(newQuant, productID);
 	connection.query('UPDATE Products SET ? WHERE ?', [{StockQuantity: newQuant}, 
 					  								    {itemID: productID}], function(err, res){
 					  								    if(err){console.log(err);}
@@ -96,11 +95,13 @@ var addInventory = function(){
 					  		console.log('\nenter a number\n');
 					  	}
 					}}]).then(function(answers){
-					  		connection.query('SELECT StockQuantity FROM Products WHERE itemID = ?', [answers.productChoice], function(err, res){
+					  		connection.query('SELECT StockQuantity FROM Products WHERE itemID = ?', [Math.floor(answers.productChoice)], function(err, res){
 					  			if(err){console.log(err);}
 					  			//change user increase choice from sting to number using parseInt() then added to current stock
-					  			var quantTotal = parseInt(answers.quantIncrease) + res[0].StockQuantity;
-					  			var parseID = parseInt(answers.productChoice);
+					  			var wholeNum = Math.floor(answers.quantIncrease);
+					  			var wholeID = Math.floor(answers.productChoice);
+					  			var quantTotal = parseInt(wholeNum) + res[0].StockQuantity;
+					  			var parseID = parseInt(wholeID);
 					  			updateInventory(quantTotal, parseID);
 					  		})					  	
 					  })
