@@ -2,15 +2,15 @@ var inquirer = require('inquirer');
 var mysql = require('mysql');
 require('console.table');
 
-//connect to the database
+//connect to mysql info
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
 	user: 'root',
-	password: 'sigepfenderp',
+	password: '',
 	database: 'Bamazon'
 })
-
+//connectin to mysql database
 connection.connect(function(err){
 	if(err) {
 		console.error('error connecting: ' + err.stack);
@@ -38,6 +38,7 @@ var executiveStart = function(){
 				      })
 }
 
+//function to view all departmetns, costs, totalSales & total profit shown in a created row
 var viewProducts = function(){
 	//Select statement that subtracts sales from costs and shows them as a temporary column called TotalProfit
 	var query = 'SELECT *, `TotalSales` - `OverHeadCosts` AS `TotalProfit` FROM Departments;'
@@ -78,13 +79,15 @@ var createDepartment = function(){
 					  		var query = 'INSERT INTO `Departments` SET ?'
 					  		connection.query(query, {
 					  			DepartmentName: answers.department,
-					  			OverHeadCosts: answers.overhead,
-					  			TotalSales: answers.sales
+					  			OverHeadCosts: Math.round(answers.overhead * 100)/100,
+					  			TotalSales: Math.round(answers.sales * 100)/100
 					  		}, function(err, res){
 					  			if(err){console.log(err);}
 					  			console.log('\nNew Department Successfully Added\n');
+					  			//go back to the start menu
 					  			executiveStart();
 					  		})
 					  	})
 }
+//start the executive app
 executiveStart();
