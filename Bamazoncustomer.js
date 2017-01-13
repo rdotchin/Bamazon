@@ -78,7 +78,7 @@ var selectItem = function(productID, amount){
 		if(error){console.log(error);} 
 		//if out of stock it will notify the customer and ask them to make a new purchase
 		else if(amount > results[0].StockQuantity){
-			console.log("Insufficient quantity!");
+			console.log("\nInsufficient quantity!\n");
 			return start();
 		} 
 		else {
