@@ -2,12 +2,13 @@ var inquirer = require('inquirer');
 var mysql = require('mysql');
 require('console.table');
 
+
 //connect to the database
 var connection = mysql.createConnection({
 	host: 'localhost',
 	port: 3306,
 	user: 'root',
-	password: 'sigepfenderp',
+	password: '',
 	database: 'Bamazon'
 })
 
@@ -72,6 +73,10 @@ var updateInventory = function(newQuant, productID){
 					  								    managerStart();
 					  									})
 }
+
+
+
+
 //display a prompt that will let the manager "add more" of any item currently in the store
 var addInventory = function(){
 	inquirer.prompt([{name: 'productChoice',
@@ -92,7 +97,7 @@ var addInventory = function(){
 					  		return true
 					  	} 
 					  	else {
-					  		console.log('\nenter a number\n');
+					  		console.log('\nenter an itemID number\n');
 					  	}
 					}}]).then(function(answers){
 					  		connection.query('SELECT StockQuantity FROM Products WHERE itemID = ?', [Math.floor(answers.productChoice)], function(err, res){
