@@ -1,9 +1,9 @@
 # Bamazon
 Amazon-like storefront using MySQL and Node.js
 
-##Customer View (bamazonCustomer.js)
+### Customer View (bamazonCustomer.js)
 
-### To Start the Customer App:
+###### To Start the Customer App:
 
 `>node bamazonCustomer.js`
 
@@ -21,7 +21,7 @@ Sufficient inventory check:
 
 ### Manager View (BamazonManager.js)
 
-### To Start the Manager App:
+###### To Start the Manager App:
 
 `>node bamazonManager.js`
 
@@ -41,9 +41,9 @@ Add new product:
 
 ![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamM4.gif "add new product bamazonManager.js")
 
-##Executive View (bamazonExecutive.js): 
+### Executive View (bamazonExecutive.js): 
 
-### To Start the Executive App:
+###### To Start the Executive App:
 
 `>node bamazonExecutive.js`
 
