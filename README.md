@@ -13,11 +13,11 @@ Running the app displays all the items for sale:
 
 Customer purchase process:
 
-![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bam2.gif "purchase & receipt bamazonCustomer.js")
+![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamC2.gif "purchase & receipt bamazonCustomer.js")
 
 Sufficient inventory check:
 
-![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bam3.gif "supply check bamazonCustomer.js")
+![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamC3.gif "supply check bamazonCustomer.js")
 
 ### Manager View (BamazonManager.js)
 
@@ -39,7 +39,7 @@ Add to current inventory:
 
 Add new product:
 
-![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamM3.gif "add new product bamazonManager.js")
+![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamM4.gif "add new product bamazonManager.js")
 
 ##Executive View (bamazonExecutive.js): 
 
@@ -57,4 +57,4 @@ View Product Sales by Department:
 
 Create New Department:
 
-![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamE2.gif "create new department bamazonExecutive.js")
+![Alt text] (https://raw.githubusercontent.com/rdotchin/Bamazon/master/images/bamE3.gif "create new department bamazonExecutive.js")
