@@ -1,7 +1,7 @@
 var inquirer = require('inquirer');
 var mysql = require('mysql');
 require('console.table');
-
+var idArray = [];
 
 //connect to the database
 var connection = mysql.createConnection({
@@ -20,8 +20,10 @@ connection.connect(function(err){
 
 //begins the application and prompts the manager with choices
 var managerStart = function(){
+
+		buildIdArray();
 		inquirer.prompt([{name: 'managerChoice',
-						   type: 'rawlist',
+						   type: 'list',
 						   message: 'Manager Options',
 						   choices: ['Veiw Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product', 'Exit program']	
 		}]).then(function(answers){
@@ -45,6 +47,17 @@ var managerStart = function(){
 			}
 		})
 }
+
+//build array of itemID numbers in SQL table to confirm users choice in idQuery()
+var buildIdArray = function(){
+	connection.query('SELECT itemID FROM `Products`', function(error, results, fields){
+		for (var i = 1; i < results.length + 1; i++) {
+			idArray.push(i);
+
+		}
+	})
+}
+
 //list every available item
 var allInventory = function(){
 	connection.query('SELECT * FROM `Products`', function(error, results, fields){
@@ -83,11 +96,11 @@ var addInventory = function(){
 					type: 'input',
 					message: 'Choose an itemID',
 					validate: function(value){
-					  	if(!isNaN(value)){
+					  	if(!isNaN(value) && idArray.includes(Number(value))){
 					  		return true
 					  	} 
 					  	else {
-					  		console.log('\nenter a number\n');
+					  		console.log('\nenter a unitID number\n');
 					  	}}},
 					{name: 'quantIncrease',
 					type: 'input',

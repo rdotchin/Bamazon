@@ -1,6 +1,7 @@
 var inquirer = require('inquirer');
 var mysql = require('mysql');
 require('console.table');
+var idArray = [];
 
 //connect to the database
 var connection = mysql.createConnection({
@@ -20,6 +21,11 @@ connection.connect(function(err){
 
 //show products available in Bamazon database Products table
 var start = function(){
+	//empty array holding the amount of choices
+	idArray = [];
+	//build the array
+	buildIdArray();
+	//connect to SQL table selecing all items from table Products to be displayed
 	connection.query('SELECT * FROM `Products`', function(error, results, fields){
 		if(error){
 			console.log("error: " + error);
@@ -31,6 +37,15 @@ var start = function(){
 	});
 	
 }
+//build array of itemID numbers in SQL table to confirm users choice in idQuery()
+var buildIdArray = function(){
+	connection.query('SELECT itemID FROM `Products`', function(error, results, fields){
+		for (var i = 1; i < results.length + 1; i++) {
+			idArray.push(i);
+
+		}
+	})
+}
 
 //ask the customer which item they would like to purchase
 var idQuery = function(){
@@ -38,7 +53,8 @@ var idQuery = function(){
 				      type: 'input',
 					  message: 'Choose the ID of the product you would like to purchase',
 					  validate: function(value){
-					  	if(!isNaN(value)){
+					  	//check if the input is a number and matches a unitID
+					  	if(!isNaN(value) && idArray.includes(Number(value))){
 					  		return true
 					  	} 
 					  	else {
